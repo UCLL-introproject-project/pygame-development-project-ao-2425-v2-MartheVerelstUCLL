@@ -27,13 +27,13 @@ my_hand = []
 dealer_hand = []
 outcome = 0
 reveal_dealer = False
+hand_active = False
 
 # deal cards by selecting randomly from deck, and make function for one card at a time
 def deal_cards(current_hand, current_deck):
     card = random.randint(0, len(current_deck))
     current_hand.append(current_deck[card-1])
     current_deck.pop(card-1)
-    print(current_hand, current_deck)
     return current_hand, current_deck
 
 # draw scores for player and dealer on screen
@@ -41,8 +41,6 @@ def draw_scores(player, dealer):
     screen.blit(font.render(f'Score[{player}]', True, 'white'), (350, 400))
     if reveal_dealer:
         screen.blit(font.render(f'Score[{dealer}]', True, 'white'), (350, 100))
-
-
 
 # draw cards visually onto screen
 def draw_cards(player, dealer, reveal):
@@ -125,12 +123,15 @@ while run:
         for i in range(2):
             my_hand, game_deck = deal_cards(my_hand, game_deck)
             dealer_hand, game_deck = deal_cards(dealer_hand, game_deck)
-        print(my_hand, dealer_hand)
         initial_deal = False
     # once game is activated, and dealt, calculate scores and display cards
     if active:
         player_score = calculate_score(my_hand)
         draw_cards(my_hand, dealer_hand, reveal_dealer)
+        if reveal_dealer:
+            dealer_score = calculate_score(dealer_hand)
+            if dealer_score < 17:
+                dealer_hand, game_deck = deal_cards(dealer_hand, game_deck)
         draw_scores(player_score, dealer_score)
     buttons = draw_game(active, records)
 
@@ -144,12 +145,20 @@ while run:
                 if buttons[0].collidepoint(event.pos):
                     active = True
                     initial_deal = True
+                    game_deck = copy.deepcopy(decks * one_deck)
                     my_hand = []
                     dealer_hand = []
                     outcome = 0
+                    hand_active = True
+            else:
+                if buttons[0].collidepoint(event.pos) and player_score < 21 and hand_active:
+                    my_hand, game_deck = deal_cards(my_hand, game_deck)
+                elif buttons[1].collidepoint(event.pos) and not reveal_dealer:
+                    reveal_dealer = True
+                    hand_active = False
     
     pygame.display.flip() # make sure everything is flipped onto the screen
 pygame.quit() # while-loop exited
 
 
-# 27:24: initial deal https://youtu.be/e3YkdOXhFpQ?t=1644
+# ace for dealer = 1? test again 
