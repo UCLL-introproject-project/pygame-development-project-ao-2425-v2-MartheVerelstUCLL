@@ -16,7 +16,7 @@ pygame.display.set_caption('Pygame Blackjack!')
 fps = 60
 timer = pygame.time.Clock()
 font = pygame.font.Font('freesansbold.ttf', 44)
-smaller_font = pygame.font.Font('freesansbold.ttf', 36)
+smaller_font = pygame.font.Font('freesansbold.ttf', 22)
 active = False
 # win, loss, draw/push
 records = [0, 0, 0]
@@ -31,6 +31,32 @@ hand_active = False
 outcome = 0
 add_score = False
 results = ['', 'PLAYER BUSTED o_O', 'PLAYER WINS! :)', 'DEALER WINS :(', 'TIE GAME...']
+showing_rules = False
+
+# create a button that shows the rules
+def show_rules():
+    global showing_rules
+    rules_button = pygame.draw.circle(screen, 'white', (500, 50), 30)
+    rules_text = font.render('?', True, 'black')
+    text_rect = rules_text.get_rect(center=(500,50)) # center the text in the button
+    screen.blit(rules_text, text_rect)
+
+    # draw rectangle with text when you want to show the rules
+    if showing_rules:
+        pygame.draw.rect(screen, 'white',[100, 200, 400, 400], 0, 10)  
+        pygame.draw.rect(screen, 'black', [100, 200, 400, 400], 5, 10)
+        for i, line in enumerate ([
+            "Blackjack Rules:",
+            "- Get as close to 21 as possible.",
+            "- Number cards: Face value.",
+            "- Face cards (J, Q, K): 10 points.",
+            "- Aces: 1 or 11 points.",
+            "- Beat the dealer without busting!",
+            "- Click anywhere to return."
+        ]):
+            rule_text = smaller_font.render(line, True, 'black')
+            screen.blit(rule_text, (120, 220 + i * 50))
+    return rules_button
 
 # deal cards by selecting randomly from deck, and make function for one card at a time
 def deal_cards(current_hand, current_deck):
@@ -48,14 +74,14 @@ def draw_scores(player, dealer):
 # draw cards visually onto screen
 def draw_cards(player, dealer, reveal):
     for i in range(len(player)):
-        pygame.draw.rect(screen, 'white', [70 + (70 * i), 460 + (5 * i), 120, 220], 0, 5) #70 * i = move to the right
+        pygame.draw.rect(screen, 'white', [70 + (70 * i), 460 + (5 * i), 120, 220], 0, 5) 
         screen.blit(font.render(player[i], True, 'black'), (75 + 70*i, 465 + 5*i))
         screen.blit(font.render(player[i], True, 'black'), (75 + 70*i, 635 + 5*i))
         pygame.draw.rect(screen, 'red', [70 + (70 * i), 460 + (5 * i), 120, 220], 5, 5) 
 
     # if player hasn't finished turn, dealer will hide one card
     for i in range(len(dealer)):
-        pygame.draw.rect(screen, 'white', [70 + (70 * i), 160 + (5 * i), 120, 220], 0, 5) #70 * i = move to the right
+        pygame.draw.rect(screen, 'white', [70 + (70 * i), 160 + (5 * i), 120, 220], 0, 5) 
         if i  != 0 or reveal:
             screen.blit(font.render(dealer[i], True, 'black'), (75 + 70*i, 165 + 5*i))
             screen.blit(font.render(dealer[i], True, 'black'), (75 + 70*i, 335 + 5*i))
@@ -166,6 +192,7 @@ while run:
             if dealer_score < 17:
                 dealer_hand, game_deck = deal_cards(dealer_hand, game_deck)
         draw_scores(player_score, dealer_score)
+    rules_button = show_rules()
     buttons = draw_game(active, records, outcome)
 
 
@@ -174,6 +201,10 @@ while run:
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame.MOUSEBUTTONUP:
+            if rules_button.collidepoint(event.pos):
+                showing_rules = not showing_rules
+            elif showing_rules:
+                showing_rules = False
             if not active:
                 if buttons[0].collidepoint(event.pos):
                     active = True
@@ -185,6 +216,8 @@ while run:
                     hand_active = True
                     outcome = 0
                     add_score = True
+                    dealer_score = 0
+                    player_score = 0
             else:
                 # if player can hit, allow them to draw a card
                 if buttons[0].collidepoint(event.pos) and player_score < 21 and hand_active:
@@ -206,6 +239,7 @@ while run:
                         add_score = True
                         dealer_score = 0
                         player_score = 0
+                        reveal_dealer = False
 
     # if player busts, automatically end run - treat like a stand
     if hand_active and player_score >= 21:
