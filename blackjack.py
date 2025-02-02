@@ -30,8 +30,21 @@ reveal_dealer = False
 hand_active = False
 outcome = 0
 add_score = False
-results = ['', 'PLAYER BUSTED o_O', 'PLAYER WINS! :)', 'DEALER WINS :(', 'TIE GAME...']
 showing_rules = False
+player_name = ""
+input = True
+
+
+# allow user to enter their name
+def enter_name():
+    name_field = pygame.Rect(150, 300, 300, 50)
+    pygame.draw.rect(screen, 'black', name_field)
+    pygame.draw.rect(screen, 'white', name_field, 2)
+    if player_name == "":
+        text = smaller_font.render("Type your name and enter", True, 'gray')
+    else:
+        text = font.render(player_name, True, 'white')
+    screen.blit(text, (name_field.x + 10, name_field.y + 10))
 
 # create a button that shows the rules
 def show_rules():
@@ -52,7 +65,7 @@ def show_rules():
             "- Face cards (J, Q, K): 10 points.",
             "- Aces: 1 or 11 points.",
             "- Beat the dealer without busting!",
-            "- Click anywhere to return."
+            "Click anywhere to return."
         ]):
             rule_text = smaller_font.render(line, True, 'black')
             screen.blit(rule_text, (120, 220 + i * 50))
@@ -67,9 +80,9 @@ def deal_cards(current_hand, current_deck):
 
 # draw scores for player and dealer on screen
 def draw_scores(player, dealer):
-    screen.blit(font.render(f'Score[{player}]', True, 'white'), (350, 400))
+    screen.blit(font.render(f'{player_name}[{player}]', True, 'white'), (350, 400))
     if reveal_dealer:
-        screen.blit(font.render(f'Score[{dealer}]', True, 'white'), (350, 100))
+        screen.blit(font.render(f'Dealer[{dealer}]', True, 'white'), (350, 100))
 
 # draw cards visually onto screen
 def draw_cards(player, dealer, reveal):
@@ -192,7 +205,10 @@ while run:
             if dealer_score < 17:
                 dealer_hand, game_deck = deal_cards(dealer_hand, game_deck)
         draw_scores(player_score, dealer_score)
+    if input:
+        enter_name()
     rules_button = show_rules()
+    results = ['', f'{player_name} BUSTED o_O', f'{player_name} WINS! :)', 'DEALER WINS :(', 'TIE GAME...']
     buttons = draw_game(active, records, outcome)
 
 
@@ -200,6 +216,14 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
+        if input and event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_RETURN:
+                input = False
+            elif event.key == pygame.K_BACKSPACE:
+                player_name = player_name[:1]
+            else:
+                if len(player_name) < 12:
+                    player_name += event.unicode
         if event.type == pygame.MOUSEBUTTONUP:
             if rules_button.collidepoint(event.pos):
                 showing_rules = not showing_rules
