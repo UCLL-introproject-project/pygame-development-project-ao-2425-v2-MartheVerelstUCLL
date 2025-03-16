@@ -51,7 +51,7 @@ def show_rules():
     global showing_rules
     rules_button = pygame.draw.circle(screen, 'white', (500, 50), 30)
     rules_text = font.render('?', True, 'black')
-    text_rect = rules_text.get_rect(center=(500,50)) # center the text in the button
+    text_rect = rules_text.get_rect(center=(500,50)) 
     screen.blit(rules_text, text_rect)
 
     # draw rectangle with text when you want to show the rules
@@ -220,7 +220,7 @@ while run:
             if event.key == pygame.K_RETURN:
                 input = False
             elif event.key == pygame.K_BACKSPACE:
-                player_name = player_name[:1]
+                player_name = player_name[:-1]
             else:
                 if len(player_name) < 12:
                     player_name += event.unicode

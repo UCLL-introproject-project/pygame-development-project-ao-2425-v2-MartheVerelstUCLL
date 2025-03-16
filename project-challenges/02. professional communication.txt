@@ -1,0 +1,18 @@
+Onderwerp: Pygame Development Project
+
+Beste mevrouw Verdeyen
+
+Voor het vak 'Introductieproject' heb ik de 'blackjack'-tutorial gevolgd en de code geschreven.
+Ik heb er zelf twee functies aan toegevoegd. De eerste functie zorgt ervoor dat ik op een knop kan drukken om de spelregels te lezen. De tweede functie die ik heb toegevoegd, zorgt voor een tekstveld waarin de speler een naam kan ingeven.
+Dankzij deze laatste functie wordt de naam van de speler getoond naast zijn of haar score en komt er '[naam speler] wins/busted' op het scherm te staan aan het einde van een spel.
+
+Ik zou graag wat feedback krijgen op deze functie. Om het tekstveld te laten zien, heb ik eerst een rechthoek getekend in dezelfde kleur als de achtergrond (in dit geval zwart) en er daarna een witte rechthoek omheen getekend.
+Is dit de meest efficiënte manier om een omrande rechthoek te krijgen?
+De placeholdertekst met de instructie ("Type your name and enter") heb ik toegevoegd met behulp van een if-statement: als het tekstveld leeg is, wordt de tekst getoond; als er een karakter in het veld staat, niet meer.
+Hierbij vroeg ik me af of er een betere manier bestaat om in pygame placeholdertekst te laten zien?
+
+
+Alvast bedankt voor uw hulp.
+
+Met vriendelijke groeten
+Marthe Verelst
